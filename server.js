@@ -4,19 +4,15 @@ const { PrismaClient } = require('@prisma/client');
 const app = express();
 const prisma = new PrismaClient();
 
-// Permite que o Express entenda dados no formato JSON
+
 app.use(express.json());
 
-// Rota de teste inicial
+
 app.get('/', (req, res) => {
   return res.json({ message: 'API DevShowcase funcionando perfeitamente!' });
 });
 
-// ==========================================
-// 1. ROTAS DE PERFIL (PROFILE)
-// ==========================================
 
-// Criar Perfil
 app.post('/profiles', async (req, res) => {
   try {
     const { name, email, bio } = req.body;
@@ -29,7 +25,7 @@ app.post('/profiles', async (req, res) => {
   }
 });
 
-// Listar todos os Perfis (com seus projetos)
+
 app.get('/profiles', async (req, res) => {
   const profiles = await prisma.profile.findMany({
     include: { projects: true }
@@ -37,11 +33,7 @@ app.get('/profiles', async (req, res) => {
   return res.json(profiles);
 });
 
-// ==========================================
-// 2. ROTAS DE PROJETO (PROJECT)
-// ==========================================
 
-// Criar Projeto (vinculado a um Perfil)
 app.post('/projects', async (req, res) => {
   try {
     const { title, description, url, profileId } = req.body;
@@ -54,7 +46,7 @@ app.post('/projects', async (req, res) => {
   }
 });
 
-// Listar todos os Projetos
+
 app.get('/projects', async (req, res) => {
   const projects = await prisma.project.findMany({
     include: { profile: true, feedbacks: true, technologies: true }
@@ -62,11 +54,7 @@ app.get('/projects', async (req, res) => {
   return res.json(projects);
 });
 
-// ==========================================
-// 3. ROTAS DE TECNOLOGIA (TECHNOLOGY)
-// ==========================================
 
-// Criar Tecnologia
 app.post('/technologies', async (req, res) => {
   try {
     const { name } = req.body;
@@ -79,17 +67,13 @@ app.post('/technologies', async (req, res) => {
   }
 });
 
-// Listar Tecnologias
+
 app.get('/technologies', async (req, res) => {
   const technologies = await prisma.technology.findMany();
   return res.json(technologies);
 });
 
-// ==========================================
-// 4. ROTAS DE FEEDBACK (FEEDBACK)
-// ==========================================
 
-// Criar Feedback para um Projeto
 app.post('/feedbacks', async (req, res) => {
   try {
     const { comment, projectId } = req.body;
@@ -102,7 +86,7 @@ app.post('/feedbacks', async (req, res) => {
   }
 });
 
-// Iniciar o Servidor na porta 3000
+
 app.listen(3000, () => {
   console.log('Servidor DevShowcase rodando em http://localhost:3000');
 });
