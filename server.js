@@ -50,24 +50,21 @@ app.post('/api/projects', async (req, res) => {
   }
 });
 
-// 1. REQUISITO 1: GET /api/projects (Com filtro por tecnologia e paginação)
+// GET /api/projects (Com busca e paginação simplificada)
 app.get('/api/projects', async (req, res) => {
   try {
-    const { tech, page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
     const skip = (Number(page) - 1) * Number(limit);
 
     const projects = await prisma.project.findMany({
-      where: tech ? {
-        technologies: {
-          some: { name: { contains: tech, mode: 'insensitive' } }
-        }
-      } : {},
       skip: skip,
       take: Number(limit),
       include: { profile: true, feedbacks: true, technologies: true }
     });
+
     return res.json(projects);
   } catch (error) {
+    console.error("Erro no GET /api/projects:", error);
     return res.status(500).json({ error: 'Erro ao buscar projetos.' });
   }
 });
